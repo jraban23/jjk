@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>5.2 image and video</title>
+    <link rel="icon" href="jjk1.png">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-image: url('jjk3.webp');
+            background-size: cover;
+            background-repeat: no-repeat;
+            transition: background-image 1s ease-in-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .fade {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: inherit;
+            transition: opacity 0.5s ease-in-out;
+            opacity: 0;
+        }
+
+        .fade.show {
+            opacity: 1;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: transform 1s ease; /* transition for moving */
+            position: relative;
+            margin: 30px; 
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 600px; 
+            transition: transform 1.5s ease; /* minimize transition */
+        }
+
+        td {
+            border: 1px solid black;
+            padding: 0;
+            text-align: center;
+            position: relative;
+        }
+
+        /* size for each */
+        .cell-a, .cell-b {
+            width: 110px;  
+            height: 450px; 
+        }
+
+        .cell-c, .cell-d {
+            width: 200px; 
+            height: 150px; 
+        }
+
+        .cell-e, .cell-f {
+            width: 100px;  
+            height: 150px; 
+        }
+
+        img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        img:hover {
+            transform: scale(1.05);
+        }
+
+        video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+            display: none;
+        }
+
+        .watermark {
+            position: fixed;
+            top: 20px; 
+            left: 20px; 
+            opacity: 0.5;
+            font-size: 24px;
+            color: rgb(216, 216, 216); 
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="fade" id="fadeEffect"></div>
+    <video id="backgroundVideo" muted loop>
+        <source id="videoSource" type="video/mp4">
+
+    </video>
+
+    <div class="watermark">Jr Aban</div>
+
+    <div class="container" id="mainContainer" onclick="resetTable()">
+        <table id="imageTable">
+            <tr>
+                <td rowspan="6" class="cell-a" onclick="changeBackground('gojo.mp4', 'gojo1.jpg')">
+                    <img src="gojo1.jpg" alt="Image A">
+                </td>
+                <td rowspan="6" class="cell-b" onclick="changeBackground('sukuna.mp4', 'sukuna1.jpg')">
+                    <img src="sukuna1.jpg" alt="Image B">
+                </td>
+                <td colspan="2" class="cell-c" onclick="changeBackground('yuta.mp4', 'yuta1.jpg')">
+                    <img src="yuta1.jpg" alt="Image C">
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="cell-d" onclick="changeBackground('yuji.mp4', 'yuji1.jpg')">
+                    <img src="yuji1.jpg" alt="Image D">
+                </td>
+            </tr>
+            <tr>
+                <td rowspan="2" class="cell-e" onclick="changeBackground('megumi.mp4', 'megumi1.jpg')">
+                    <img src="megumi1.jpg" alt="Image E">
+                </td>
+                <td rowspan="2" class="cell-f" onclick="changeBackground('nobara.mp4', 'nobara1.jpg')">
+                    <img src="nobara1.jpg" alt="Image F">
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <script>
+        let tableMinimized = false; // tracker for minimize table
+
+        function changeBackground(videoSrc, backgroundImg) {
+            const body = document.body;
+            const videoElement = document.getElementById('backgroundVideo');
+            const videoSource = document.getElementById('videoSource');
+            const fadeEffect = document.getElementById('fadeEffect');
+
+            // fade effect
+            fadeEffect.style.backgroundImage = `url('${backgroundImg}')`;
+            fadeEffect.classList.add('show');
+
+            setTimeout(() => {
+                // change background image after fade effect
+                body.style.backgroundImage = `url('${backgroundImg}')`;
+                videoSource.src = videoSrc;
+                videoElement.style.display = 'block';
+                videoElement.load();
+                videoElement.play();
+                fadeEffect.classList.remove('show');
+
+                // adjustment to minimize table
+                const imageTable = document.getElementById('imageTable');
+                imageTable.style.transform = 'translate(-620px, 250px) scale(0.5)';
+                tableMinimized = true; // mark table as minimized
+            }, 500);
+        }
+
+        function resetTable() {
+            const imageTable = document.getElementById('imageTable');
+            if (tableMinimized) {
+                imageTable.style.transform = 'translate(0, 0) scale(1)'; // reset to original position and size
+                tableMinimized = false; // mark table as not minimized
+            }
+        }
+    </script>
+</body>
+</html>
